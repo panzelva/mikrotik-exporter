@@ -1,0 +1,32 @@
+name: Build
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      DOCKER_IMAGE_NAME: panzelva/mikrotik-exporter
+    steps:
+      - uses: actions/checkout@v1
+      - name: Get version from tag
+        id: version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+      - name: Login to registry
+        run: docker login --username panzelva --password $DOCKER_HUB_ACCESS_TOKEN
+      - name: Install Go utilities
+        run: |
+          go get github.com/mitchellh/gox
+          go get github.com/tcnksm/ghr
+      - name: Build binaries
+        run: |
+          LDFLAGS="-X main.appVersion=${{ steps.version.outputs.VERSION }} -X main.shortSha=$GITHUB_SHA"
+          CGO_ENABLED=0 gox -os="linux freebsd netbsd" -arch="amd64 arm arm64 386" -parallel=4 -ldflags "$LDFLAGS" -output "dist/mikrotik-exporter_{{.OS}}_{{.Arch}}"
+          ghr -replace ${{ steps.version.outputs.VERSION }} dist/
+      - name: Build Docker images
+        run: |
+          docker build -t $DOCKER_IMAGE_NAME:${{ steps.version.outputs.VERSION }} .
+          docker push $DOCKER_IMAGE_NAME:${{ steps.version.outputs.VERSION }}
