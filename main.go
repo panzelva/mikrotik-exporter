@@ -52,6 +52,9 @@ var (
 	withMonitor  = flag.Bool("with-monitor", false, "retrieves ethernet interface monitor info")
 	withIpsec    = flag.Bool("with-ipsec", false, "retrieves ipsec metrics")
 
+	withIpsecActivePeers = flag.Bool("with-ipsec-active-peers", false, "retrieves ipsec active peers metrics")
+	withCapsMan          = flag.Bool("with-caps-man", false, "retrieves caps metrics")
+
 	cfg *config.Config
 
 	appVersion = "DEVELOPMENT"
@@ -234,7 +237,6 @@ func collectorOptions() []collector.Option {
 
 	if *withMonitor || cfg.Features.Monitor {
 		opts = append(opts, collector.Monitor())
-
 	}
 
 	if *withIpsec || cfg.Features.Ipsec {
@@ -247,6 +249,14 @@ func collectorOptions() []collector.Option {
 
 	if *tls {
 		opts = append(opts, collector.WithTLS(*insecure))
+	}
+
+	if *withIpsecActivePeers || cfg.Features.IpsecActivePeers {
+		opts = append(opts, collector.WithIpsecActivePeers())
+	}
+
+	if *withCapsMan || cfg.Features.CapsMan {
+		opts = append(opts, collector.WithCapsMan())
 	}
 
 	return opts

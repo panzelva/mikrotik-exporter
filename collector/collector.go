@@ -175,6 +175,20 @@ func WithIpsec() Option {
 	}
 }
 
+// WithCapsMan enables caps monitoring
+func WithCapsMan() Option {
+	return func(c *collector) {
+		c.collectors = append(c.collectors, newCapsCollector())
+	}
+}
+
+// WithIpsecActivePeers enables ipsec active peers metrics
+func WithIpsecActivePeers() Option {
+	return func(c *collector) {
+		c.collectors = append(c.collectors, newIpsecActivePeersCollector())
+	}
+}
+
 // Option applies options to collector
 type Option func(*collector)
 

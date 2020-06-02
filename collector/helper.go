@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 )
 
 func metricStringCleanup(in string) string {
@@ -48,4 +49,17 @@ func splitStringToFloats(metric string) (float64, float64, error) {
 		return math.NaN(), math.NaN(), err
 	}
 	return m1, m2, nil
+}
+
+func parseStringToFloat64(value, device, property, errorMsg string) (float64, error) {
+	parsedValue, err := strconv.ParseFloat(value, 64)
+
+	if err != nil {
+		if errorMsg != "" {
+			log.WithFields(log.Fields{"device": device, "property": property, "value": value, "error": err}).Error(errorMsg)
+		}
+		return math.NaN(), err
+	}
+
+	return parsedValue, nil
 }
