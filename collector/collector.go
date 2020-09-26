@@ -147,7 +147,7 @@ func WithWlanIF() Option {
 }
 
 // WithMonitor enables ethernet monitor collector metrics
-func Monitor() Option {
+func WithMonitor() Option {
 	return func(c *collector) {
 		c.collectors = append(c.collectors, newMonitorCollector())
 	}
@@ -186,6 +186,13 @@ func WithCapsMan() Option {
 func WithIpsecActivePeers() Option {
 	return func(c *collector) {
 		c.collectors = append(c.collectors, newIpsecActivePeersCollector())
+	}
+}
+
+// WithCPU enables ipsec active peers metrics
+func WithCPU() Option {
+	return func(c *collector) {
+		c.collectors = append(c.collectors, newCPUCollector())
 	}
 }
 

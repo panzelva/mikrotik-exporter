@@ -51,6 +51,7 @@ var (
 	withWlanIF   = flag.Bool("with-wlanif", false, "retrieves wlan interface metrics")
 	withMonitor  = flag.Bool("with-monitor", false, "retrieves ethernet interface monitor info")
 	withIpsec    = flag.Bool("with-ipsec", false, "retrieves ipsec metrics")
+	withCpu    = flag.Bool("with-cpu", false, "retrieves cpu metrics")
 
 	withIpsecActivePeers = flag.Bool("with-ipsec-active-peers", false, "retrieves ipsec active peers metrics")
 	withCapsMan          = flag.Bool("with-caps-man", false, "retrieves caps metrics")
@@ -236,7 +237,7 @@ func collectorOptions() []collector.Option {
 	}
 
 	if *withMonitor || cfg.Features.Monitor {
-		opts = append(opts, collector.Monitor())
+		opts = append(opts, collector.WithMonitor())
 	}
 
 	if *withIpsec || cfg.Features.Ipsec {
@@ -257,6 +258,10 @@ func collectorOptions() []collector.Option {
 
 	if *withCapsMan || cfg.Features.CapsMan {
 		opts = append(opts, collector.WithCapsMan())
+	}
+
+	if *withCpu || cfg.Features.CPU {
+		opts = append(opts, collector.WithCPU())
 	}
 
 	return opts

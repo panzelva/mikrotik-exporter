@@ -27,7 +27,8 @@ type Config struct {
 		Monitor          bool `yaml:"monitor,omitempty"`
 		Ipsec            bool `yaml:"ipsec,omitempty"`
 		IpsecActivePeers bool `yaml:"ipsec_active_peers,omitempty"`
-		CapsMan             bool `yaml:"capsman,omitempty"`
+		CapsMan          bool `yaml:"capsman,omitempty"`
+		CPU              bool `yaml:"cpu,omitempty"`
 	} `yaml:"features,omitempty"`
 }
 
